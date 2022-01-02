@@ -6,16 +6,40 @@ import junit.framework.TestCase;
 
 public class SAPTest extends TestCase {
 
-    public void testLength() {
+    public void testNoLength() {
         In in = new In("input/digraph1.txt");
         Digraph G = new Digraph(in);
         SAP sap = new SAP(G);
+        assertEquals(sap.length(0, 6), -1);
+    }
 
-        assertEquals(sap.length(0, 1), -1);
-        assertEquals(sap.length(1, 0), 1);
-        assertEquals(sap.length(2, 0), 1);
-        assertEquals(sap.length(8, 0), 3);
-        assertEquals(sap.length(11, 0), 4);
+    public void testLength() {
+        In in = new In("input/digraph25.txt");
+        Digraph G = new Digraph(in);
+        SAP sap = new SAP(G);
+
+        assertEquals(sap.length(0, 5), 2);
+        assertEquals(sap.length(22, 14), 5);
+        assertEquals(sap.length(7, 24), 8);
+        assertEquals(sap.length(21, 23), 10);
+    }
+
+    public void testNoAncestor() {
+        In in = new In("input/digraph1.txt");
+        Digraph G = new Digraph(in);
+        SAP sap = new SAP(G);
+        assertEquals(sap.ancestor(0, 6), -1);
+    }
+
+    public void testAncestor() {
+        In in = new In("input/digraph25.txt");
+        Digraph G = new Digraph(in);
+        SAP sap = new SAP(G);
+
+        assertEquals(sap.ancestor(0, 5), 0);
+        assertEquals(sap.ancestor(22, 14), 3);
+        assertEquals(sap.ancestor(7, 24), 0);
+        assertEquals(sap.ancestor(21, 23), 0);
     }
 
     public static void main(String[] args) {
