@@ -1,9 +1,9 @@
+import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdIn;
-import edu.princeton.cs.algs4.StdOut;
 import junit.framework.TestCase;
 
+@SuppressWarnings("checkstyle:IllegalToken")
 public class SAPTest extends TestCase {
 
     public void testNoLength() {
@@ -42,16 +42,32 @@ public class SAPTest extends TestCase {
         assertEquals(sap.ancestor(21, 23), 0);
     }
 
-    public static void main(String[] args) {
-        In in = new In(args[0]);
+    public void testAncestorOfSubsets() {
+        In in = new In("input/digraph25.txt");
         Digraph G = new Digraph(in);
         SAP sap = new SAP(G);
-        while (!StdIn.isEmpty()) {
-            int v = StdIn.readInt();
-            int w = StdIn.readInt();
-            int length = sap.length(v, w);
-            int ancestor = sap.ancestor(v, w);
-            StdOut.printf("length = %d, ancestor = %d\n", length, ancestor);
-        }
+
+        Bag<Integer> v1 = makeBag(0, 1);
+        Bag<Integer> w1 = makeBag(5, 6);
+        assertEquals(sap.ancestor(v1, w1), 0);
+
+        Bag<Integer> v2 = makeBag(15, 21, 22);
+        Bag<Integer> w2 = makeBag(13, 14);
+        assertEquals(sap.ancestor(v2, w2), 3);
+    }
+
+    private Bag<Integer> makeBag(int... items) {
+        Bag<Integer> bag = new Bag<>();
+        for (int item : items) bag.add(item);
+        return bag;
+    }
+
+    public static void main(String[] args) {
+        SAPTest test = new SAPTest();
+        test.testLength();
+        test.testNoLength();
+        test.testAncestor();
+        test.testNoAncestor();
+        test.testAncestorOfSubsets();
     }
 }

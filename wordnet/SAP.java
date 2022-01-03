@@ -6,40 +6,47 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class SAP {
     private Digraph G;
-    private BreadthFirstDirectedPaths[] paths;
 
     // constructor takes a digraph (not necessarily a DAG)
     public SAP(Digraph G) {
-        this.G = G;
-        this.paths = new BreadthFirstDirectedPaths[G.V()];
+        this.G = new Digraph(G);
     }
 
     // length of shortest ancestral path between v and w; -1 if no such path
     public int length(int v, int w) {
-        int[] shortest = shortestAncestorPath(v, w);
+        int[] shortest = shortestAncestorPath(
+                new BreadthFirstDirectedPaths(G, v),
+                new BreadthFirstDirectedPaths(G, w)
+        );
         return shortest == null ? -1 : shortest.length - 1;
     }
 
-    private int[] shortestAncestorPath(int v, int w) {
-        if (paths[v] == null) paths[v] = new BreadthFirstDirectedPaths(G, v);
-        if (paths[w] == null) paths[w] = new BreadthFirstDirectedPaths(G, w);
+    // length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
+    public int length(Iterable<Integer> v, Iterable<Integer> w) {
+        int[] shortest = shortestAncestorPath(
+                new BreadthFirstDirectedPaths(G, v),
+                new BreadthFirstDirectedPaths(G, w)
+        );
+        return shortest == null ? -1 : shortest.length - 1;
+    }
 
+    private int[] shortestAncestorPath(
+            BreadthFirstDirectedPaths vPaths,
+            BreadthFirstDirectedPaths wPaths
+    ) {
         int[] shortest = null;
-
         for (int i = 0; i < G.V(); i++) {
-            if (!paths[v].hasPathTo(i) || !paths[w].hasPathTo(i)) continue;
-
-            int totalLength = paths[v].distTo(i) + paths[w].distTo(i) + 1;
-
+            if (!vPaths.hasPathTo(i) || !wPaths.hasPathTo(i)) continue;
+            int totalLength = vPaths.distTo(i) + wPaths.distTo(i) + 1;
             if (shortest == null || totalLength < shortest.length) {
                 int[] path = new int[totalLength];
                 int j = 0;
-                for (int item : paths[v].pathTo(i)) {
+                for (int item : vPaths.pathTo(i)) {
                     path[j] = item;
                     j++;
                 }
-                for (int item : paths[w].pathTo(i)) {
-                    path[totalLength - (j - paths[v].distTo(i))] = item;
+                for (int item : wPaths.pathTo(i)) {
+                    path[totalLength - (j - vPaths.distTo(i))] = item;
                     j++;
                 }
                 shortest = path;
@@ -50,24 +57,26 @@ public class SAP {
 
     // a common ancestor of v and w that participates in a shortest ancestral path; -1 if no such path
     public int ancestor(int v, int w) {
-        int[] path = shortestAncestorPath(v, w);
+        BreadthFirstDirectedPaths vPaths = new BreadthFirstDirectedPaths(G, v);
+        BreadthFirstDirectedPaths wPaths = new BreadthFirstDirectedPaths(G, w);
+        int[] path = shortestAncestorPath(vPaths, wPaths);
         if (path == null) return -1;
-        for (int i = 0; i < path.length; i++) {
-            if (paths[v] == null || paths[w] == null)
-                throw new RuntimeException("shortestAncestorPath(v,w) must be called before");
-            if (paths[v].hasPathTo(path[i]) && paths[w].hasPathTo(path[i]))
+        for (int i = 0; i < path.length; i++)
+            if (vPaths.hasPathTo(path[i]) && wPaths.hasPathTo(path[i]))
                 return path[i];
-        }
         return -1;
     }
 
-    // length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
-    public int length(Iterable<Integer> v, Iterable<Integer> w) {
-        return -1;
-    }
 
     // a common ancestor that participates in shortest ancestral path; -1 if no such path
     public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
+        BreadthFirstDirectedPaths vPaths = new BreadthFirstDirectedPaths(G, v);
+        BreadthFirstDirectedPaths wPaths = new BreadthFirstDirectedPaths(G, w);
+        int[] path = shortestAncestorPath(vPaths, wPaths);
+        if (path == null) return -1;
+        for (int i = 0; i < path.length; i++)
+            if (vPaths.hasPathTo(path[i]) && wPaths.hasPathTo(path[i]))
+                return path[i];
         return -1;
     }
 
