@@ -3,7 +3,6 @@ import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.In;
 import junit.framework.TestCase;
 
-@SuppressWarnings("checkstyle:IllegalToken")
 public class SAPTest extends TestCase {
 
     public void testNoLength() {

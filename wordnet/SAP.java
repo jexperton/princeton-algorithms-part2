@@ -14,6 +14,7 @@ public class SAP {
 
     // length of shortest ancestral path between v and w; -1 if no such path
     public int length(int v, int w) {
+        if (v > G.V() - 1 || w > G.V() - 1) throw new IllegalArgumentException();
         int[] shortest = shortestAncestorPath(
                 new BreadthFirstDirectedPaths(G, v),
                 new BreadthFirstDirectedPaths(G, w)
@@ -57,6 +58,7 @@ public class SAP {
 
     // a common ancestor of v and w that participates in a shortest ancestral path; -1 if no such path
     public int ancestor(int v, int w) {
+        if (v > G.V() - 1 || w > G.V() - 1) throw new IllegalArgumentException();
         BreadthFirstDirectedPaths vPaths = new BreadthFirstDirectedPaths(G, v);
         BreadthFirstDirectedPaths wPaths = new BreadthFirstDirectedPaths(G, w);
         int[] path = shortestAncestorPath(vPaths, wPaths);
